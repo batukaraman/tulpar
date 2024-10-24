@@ -36,9 +36,26 @@ export interface TextboxProps {
 
 export interface ValidationValues {
   selectedCompany: Company;
+  rating: RatingValues;
 }
 
 export interface SelectCompanyStepProps {
   selectedCompany: Company | null;
   setSelectedCompany: (company: Company | null) => void;
+}
+
+interface RatingCriteria {
+  name: string;
+  rating: number;
+  comment: string;
+}
+
+export interface RatingValues {
+  general: number;
+  criteria: RatingCriteria[];
+}
+
+export interface EvaluateStepProps {
+  rating: RatingValues;
+  setRating: (rating: RatingValues) => void;
 }
