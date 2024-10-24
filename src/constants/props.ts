@@ -37,6 +37,8 @@ export interface TextboxProps {
 export interface ValidationValues {
   selectedCompany: Company;
   rating: RatingValues;
+  comment: string;
+  media: any[] | null;
 }
 
 export interface SelectCompanyStepProps {
@@ -58,4 +60,11 @@ export interface RatingValues {
 export interface EvaluateStepProps {
   rating: RatingValues;
   setRating: (rating: RatingValues) => void;
+}
+
+export interface AddStepProps {
+  comment: string;
+  setComment: (comment: string) => void;
+  media: any[] | null;
+  setMedia: (media: any[] | null) => void;
 }

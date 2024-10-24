@@ -1,5 +1,6 @@
 import SelectCompanyStep from "@/components/CreateScreenSteps/SelectCompanyStep";
 import EvaluateStep from "@/components/CreateScreenSteps/EvaluateStep";
+import AddStep from "@/components/CreateScreenSteps/AddStep";
 import { RatingValues } from "@/constants/props";
 import { Step } from "@/models/Step";
 
@@ -54,6 +55,30 @@ export const stepsConfig: Step[] = [
           ...values,
           rating: { ...values.rating, ...newRating },
         }),
+    }),
+  },
+  {
+    title: "Ekleme Yap",
+    Component: AddStep,
+    validationRules: [
+      {
+        validate: (values) => values.comment.trim() == "",
+        errorMessage: "Yorum alanı boş bırakılamaz.",
+      },
+      {
+        validate: (values) => values.comment.trim().length < 10,
+        errorMessage: "Yorum en az 10 karakter olmalı.",
+      },
+    ],
+    initialValues: { comment: "", media: null },
+    props: (
+      values: { comment: any; media: any },
+      setValues: (arg0: any) => any
+    ) => ({
+      comment: values.comment,
+      setComment: (comment: any) => setValues({ ...values, comment }),
+      media: values.media,
+      setMedia: (media: any) => setValues({ ...values, media }),
     }),
   },
 ];
