@@ -1,14 +1,17 @@
 import { Company } from "@/models/Company";
 import { ViewStyle, TextInput } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 type ButtonVariant = "primary" | "secondary";
 type ButtonIconFloat = "left" | "right";
+
+export type iconName = keyof typeof Ionicons.glyphMap;
 
 export interface ButtonProps {
   style?: ViewStyle;
   text: string;
   variant?: ButtonVariant;
-  iconName?: string;
+  iconName?: iconName;
   iconVisible?: boolean;
   iconFloat?: ButtonIconFloat;
   onlyIcon?: boolean;
@@ -26,7 +29,7 @@ export interface TextboxProps {
   type?: string;
   placeholder?: string;
   showIcon?: boolean;
-  specialIcon?: string;
+  iconName?: iconName;
   validationRules?: validationRule[];
   value?: string;
   numberOfLines?: number;

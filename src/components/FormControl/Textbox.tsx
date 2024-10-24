@@ -1,4 +1,4 @@
-import { TextboxProps } from "@/constants/props";
+import { TextboxProps, iconName } from "@/constants/props";
 import { colors, sizes, spacing } from "@/constants/theme";
 import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
@@ -9,7 +9,7 @@ function Textbox({
   type = "text",
   placeholder,
   showIcon = false,
-  specialIcon = "",
+  iconName = "text-outline",
   validationRules = [],
   value: initialValue = "",
   numberOfLines = 1,
@@ -25,7 +25,7 @@ function Textbox({
     setHidePassword(!hidePassword);
   };
 
-  const iconHandle = (): string => {
+  const iconHandle = (): iconName => {
     switch (type) {
       case "search":
         return "search-outline";
@@ -35,10 +35,8 @@ function Textbox({
         return "mail-outline";
       case "username":
         return "person-outline";
-      case "text":
-        return "text-outline";
       default:
-        return "";
+        return "text-outline";
     }
   };
 
@@ -70,9 +68,9 @@ function Textbox({
           isFocused && styles.focused,
         ]}
       >
-        {((iconHandle() && showIcon) || specialIcon) && (
+        {((iconHandle() && showIcon) || iconName) && (
           <Icon
-            name={iconHandle() || specialIcon}
+            name={iconHandle() || iconName}
             style={[
               size === "s"
                 ? styles.inputSmall

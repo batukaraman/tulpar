@@ -122,6 +122,7 @@ function Create(): React.JSX.Element {
             padding: spacing.m,
             borderTopWidth: 1,
             borderColor: "rgba(27, 31, 35, 0.15)",
+            backgroundColor: colors.white,
           },
           validations[step] && keyboardIsVisible && { paddingVertical: 0 },
         ]}

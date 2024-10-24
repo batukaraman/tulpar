@@ -126,15 +126,15 @@ const options: FilePickerActionSheetOption[] = [
 export const onSelectMediaType = async (type: TMedia): Promise<any | null> => {
   if (type === "document") {
     const data = await pickDocument();
-    return data ?? null; // Seçilen medya döndürülüyor ya da null
+    return data ?? null;
   }
   if (type === "photo") {
     const data = await pickImageFromGallery();
-    return data ?? null; // Seçilen medya döndürülüyor ya da null
+    return data ?? null;
   }
   if (type === "camera") {
     const data = await takeImageWithCamera();
-    return data ?? null; // Seçilen medya döndürülüyor ya da null
+    return data ?? null;
   }
   return null;
 };
