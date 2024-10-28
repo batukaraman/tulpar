@@ -5,6 +5,7 @@ import Logo from "@/components/Logo";
 import Icon from "@expo/vector-icons/Ionicons";
 import Constants from "expo-constants";
 import { Link } from "expo-router";
+import { Pressable } from "react-native";
 
 function MainHeader(): React.JSX.Element {
   return (
@@ -23,7 +24,14 @@ function MainHeader(): React.JSX.Element {
           </View>
         </Link>
         <Logo width={150} height={24} />
-        <Icon name="notifications-outline" size={24} color={colors.black} />
+        <Pressable
+          style={styles.button}
+          onPress={() => {
+            console.log("Bildirimler");
+          }}
+        >
+          <Icon name="notifications-outline" size={24} color={colors.black} />
+        </Pressable>
       </View>
     </View>
   );
@@ -39,12 +47,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: spacing.s,
-    paddingHorizontal: spacing.m,
+    paddingHorizontal: spacing.s,
+    paddingLeft: spacing.m,
     height: 60,
   },
   _statusBar: {
     height: Constants.statusBarHeight,
   },
+  button: { padding: 8 },
   avatarWrapper: {
     width: 32,
     height: 32,

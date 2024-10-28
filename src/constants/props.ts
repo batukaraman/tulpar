@@ -65,9 +65,23 @@ export interface EvaluateStepProps {
   setRating: (rating: RatingValues) => void;
 }
 
+type DocumentMedia = {
+  size: number;
+  mimeType: string;
+  uri: string;
+  name: string;
+};
+
+type ImageMedia = DocumentMedia & {
+  width: number;
+  height: number;
+};
+
+export type Media = DocumentMedia | ImageMedia;
+
 export interface AddStepProps {
   comment: string;
   setComment: (comment: string) => void;
-  media: any[] | null;
+  media: Media[];
   setMedia: (media: any[] | null) => void;
 }

@@ -10,7 +10,7 @@ function OtherHeader({ title }: { title: string }): React.JSX.Element {
     <View style={styles.container}>
       <View style={styles._statusBar}></View>
       <View style={styles.body}>
-        <Pressable onPress={() => router.back()}>
+        <Pressable style={styles.button} onPress={() => router.back()}>
           <Icon name="arrow-back-outline" size={24} color={colors.black} />
         </Pressable>
         <Text style={styles.title}>{title}</Text>
@@ -27,13 +27,14 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.s,
-    paddingHorizontal: spacing.m,
+    gap: spacing.xs,
+    paddingHorizontal: spacing.s,
     height: 60,
   },
   _statusBar: {
     height: Constants.statusBarHeight,
   },
+  button: { padding: 8 },
   title: {
     color: colors.black,
     fontSize: sizes.h3,

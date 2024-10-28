@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import { useActionSheet } from "@expo/react-native-action-sheet";
-import { View, Text, Button as RNButton, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import Button from "@/components/Button";
-import { TMedia, getOptions, onSelectMediaType } from "@/helpers/filePicker";
+import { TMedia, getOptions } from "@/helpers/filePicker";
+import { Media } from "@/constants/props";
 
 const FilePicker = ({
   mediaTypes,
+  selectedMedia,
   onSelect,
   multiple = false,
 }: {
   mediaTypes: TMedia[];
-  onSelect?: (selectedMedia: any[]) => void;
+  selectedMedia: Media[];
+  onSelect: (selectedMedia: any[]) => void;
   multiple?: boolean;
 }) => {
-  const [selectedMedia, setSelectedMedia] = useState<any[]>([]);
   const options = getOptions(mediaTypes);
   const { showActionSheetWithOptions } = useActionSheet();
 
@@ -31,18 +33,14 @@ const FilePicker = ({
       },
       async (buttonIndex) => {
         if (buttonIndex !== undefined && buttonIndex < optionLabels.length) {
-          const media = await options[buttonIndex].onPress();
+          const media = await options[buttonIndex].onPress(multiple);
           if (media === undefined || media === null) {
             return;
           }
           const updatedMedia = multiple
             ? [...selectedMedia, ...media]
             : [...media];
-          setSelectedMedia(updatedMedia);
-
-          if (typeof onSelect === "function") {
-            onSelect(updatedMedia);
-          }
+          onSelect(updatedMedia);
         }
       }
     );
@@ -50,11 +48,7 @@ const FilePicker = ({
 
   const handleRemoveMedia = (index: number) => {
     const updatedMedia = selectedMedia.filter((_, i) => i !== index);
-    setSelectedMedia(updatedMedia);
-
-    if (typeof onSelect === "function") {
-      onSelect(updatedMedia);
-    }
+    onSelect(updatedMedia);
   };
 
   return (
@@ -78,7 +72,7 @@ const FilePicker = ({
                 marginBottom: 4,
               }}
             >
-              <Text>{media.name || media.fileName}</Text>
+              <Text>{media.name}</Text>
               <TouchableOpacity
                 style={{
                   paddingHorizontal: 12,

@@ -70,7 +70,7 @@ export const stepsConfig: Step[] = [
         errorMessage: "Yorum en az 10 karakter olmalı.",
       },
     ],
-    initialValues: { comment: "", media: null },
+    initialValues: { comment: "", media: [] },
     props: (
       values: { comment: any; media: any },
       setValues: (arg0: any) => any

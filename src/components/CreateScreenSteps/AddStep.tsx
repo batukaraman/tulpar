@@ -9,7 +9,8 @@ const AddStep = ({ comment, setComment, media, setMedia }: AddStepProps) => {
     <View style={{ flex: 1, padding: spacing.m, gap: spacing.m }}>
       <FilePicker
         mediaTypes={["camera", "document", "photo"]}
-        onSelect={setMedia} 
+        selectedMedia={media}
+        onSelect={setMedia}
         multiple
       />
       <Textbox

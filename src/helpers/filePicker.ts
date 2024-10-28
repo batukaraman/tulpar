@@ -3,7 +3,7 @@ import * as DocumentPicker from "expo-document-picker";
 import * as Linking from "expo-linking";
 import { Alert } from "react-native";
 
-export const pickImageFromGallery = async () => {
+export const pickImageFromGallery = async (multiple: boolean) => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
   if (status !== "granted") {
@@ -26,18 +26,27 @@ export const pickImageFromGallery = async () => {
 
   const result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.All,
-    allowsEditing: true,
     aspect: [4, 3],
     quality: 1,
+    allowsMultipleSelection: multiple,
   });
 
   if (!result.canceled) {
-    return result.assets;
+    return result.assets.map((file) => {
+      return {
+        name: file.fileName,
+        size: file.fileSize,
+        mimeType: file.mimeType,
+        uri: file.uri,
+        width: file.width,
+        height: file.height,
+      };
+    });
   }
   return null;
 };
 
-export const takeImageWithCamera = async () => {
+export const takeImageWithCamera = async (multiple: boolean) => {
   const { status } = await ImagePicker.requestCameraPermissionsAsync();
 
   if (status !== "granted") {
@@ -60,18 +69,27 @@ export const takeImageWithCamera = async () => {
 
   const result = await ImagePicker.launchCameraAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.All,
-    allowsEditing: true,
     aspect: [4, 3],
     quality: 1,
+    allowsMultipleSelection: multiple,
   });
 
   if (!result.canceled) {
-    return result.assets;
+    return result.assets.map((file) => {
+      return {
+        name: file.fileName,
+        size: file.fileSize,
+        mimeType: file.mimeType,
+        uri: file.uri,
+        width: file.width,
+        height: file.height,
+      };
+    });
   }
   return null;
 };
 
-export const pickDocument = async () => {
+export const pickDocument = async (multiple: boolean) => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
   if (status !== "granted") {
@@ -95,10 +113,18 @@ export const pickDocument = async () => {
   const result = await DocumentPicker.getDocumentAsync({
     type: "*/*",
     copyToCacheDirectory: true,
+    multiple: multiple,
   });
 
   if (result.assets && result.assets.length > 0) {
-    return result.assets;
+    return result.assets.map((file) => {
+      return {
+        name: file.name,
+        size: file.size,
+        mimeType: file.mimeType,
+        uri: file.uri,
+      };
+    });
   }
   return null;
 };
@@ -109,31 +135,34 @@ const options: FilePickerActionSheetOption[] = [
   {
     type: "document",
     label: "Döküman Seç",
-    onPress: () => onSelectMediaType("document"),
+    onPress: (multiple: boolean) => onSelectMediaType("document", multiple),
   },
   {
     type: "photo",
     label: "Galeriden Seç",
-    onPress: () => onSelectMediaType("photo"),
+    onPress: (multiple: boolean) => onSelectMediaType("photo", multiple),
   },
   {
     type: "camera",
     label: "Kamerayı Aç",
-    onPress: () => onSelectMediaType("camera"),
+    onPress: (multiple: boolean) => onSelectMediaType("camera", multiple),
   },
 ];
 
-export const onSelectMediaType = async (type: TMedia): Promise<any | null> => {
+export const onSelectMediaType = async (
+  type: TMedia,
+  multiple: boolean
+): Promise<any | null> => {
   if (type === "document") {
-    const data = await pickDocument();
+    const data = await pickDocument(multiple);
     return data ?? null;
   }
   if (type === "photo") {
-    const data = await pickImageFromGallery();
+    const data = await pickImageFromGallery(multiple);
     return data ?? null;
   }
   if (type === "camera") {
-    const data = await takeImageWithCamera();
+    const data = await takeImageWithCamera(multiple);
     return data ?? null;
   }
   return null;
@@ -142,7 +171,7 @@ export const onSelectMediaType = async (type: TMedia): Promise<any | null> => {
 export type FilePickerActionSheetOption = {
   type: TMedia;
   label: string;
-  onPress: () => void;
+  onPress: (multiple: boolean) => void;
 };
 
 export const getOptions = (
