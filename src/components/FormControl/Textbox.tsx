@@ -66,6 +66,7 @@ function Textbox({
           },
           { alignItems: numberOfLines != 1 ? "flex-start" : "center" },
           isFocused && styles.focused,
+          { borderRadius: numberOfLines > 1 ? 15 : 99 },
         ]}
       >
         {((iconHandle() && showIcon) || iconName) && (
@@ -153,13 +154,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.s,
-    borderRadius: 6,
+    borderRadius: 99,
     fontSize: sizes.body,
     borderWidth: 1,
-    borderColor: "rgba(27, 31, 35, 0.15)",
+    borderColor: colors.lightGray,
   },
   focused: {
-    borderColor: "rgba(27, 31, 35, 0.5)",
+    borderColor: colors.primary,
   },
   input: {
     flex: 1,

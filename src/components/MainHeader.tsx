@@ -6,11 +6,11 @@ import Icon from "@expo/vector-icons/Ionicons";
 import Constants from "expo-constants";
 import { Link } from "expo-router";
 import { Pressable } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
 function MainHeader(): React.JSX.Element {
   return (
     <View style={styles.container}>
-      <View style={styles._statusBar}></View>
       <View style={styles.body}>
         <Link href="/profile">
           <View style={styles.avatarWrapper}>
@@ -40,6 +40,9 @@ function MainHeader(): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
+    borderBottomWidth: 1,
+    borderColor: colors.lightGray,
+    paddingTop: Constants.statusBarHeight,
   },
   body: {
     display: "flex",

@@ -44,7 +44,7 @@ export interface ValidationValues {
   media: any[] | null;
 }
 
-export interface SelectCompanyStepProps {
+export interface CompanyStepProps {
   selectedCompany: Company | null;
   setSelectedCompany: (company: Company | null) => void;
 }
@@ -60,7 +60,7 @@ export interface RatingValues {
   criteria: RatingCriteria[];
 }
 
-export interface EvaluateStepProps {
+export interface RatingStepProps {
   rating: RatingValues;
   setRating: (rating: RatingValues) => void;
 }
@@ -79,7 +79,7 @@ type ImageMedia = DocumentMedia & {
 
 export type Media = DocumentMedia | ImageMedia;
 
-export interface AddStepProps {
+export interface AdditionStepProps {
   comment: string;
   setComment: (comment: string) => void;
   media: Media[];

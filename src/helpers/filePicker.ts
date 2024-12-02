@@ -2,6 +2,11 @@ import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import * as Linking from "expo-linking";
 import { Alert } from "react-native";
+import { Media } from "@/constants/props";
+
+// Dosya türleri alınmalı, bu türlere göre izin verilmeli
+// max dosya boyutu alınmalı buna göre izin verilmeli
+// aynı dosya eklenemesin bunu URI ile kontrol edebilir
 
 export const pickImageFromGallery = async (multiple: boolean) => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -131,24 +136,6 @@ export const pickDocument = async (multiple: boolean) => {
 
 export type TMedia = "photo" | "camera" | "document";
 
-const options: FilePickerActionSheetOption[] = [
-  {
-    type: "document",
-    label: "Döküman Seç",
-    onPress: (multiple: boolean) => onSelectMediaType("document", multiple),
-  },
-  {
-    type: "photo",
-    label: "Galeriden Seç",
-    onPress: (multiple: boolean) => onSelectMediaType("photo", multiple),
-  },
-  {
-    type: "camera",
-    label: "Kamerayı Aç",
-    onPress: (multiple: boolean) => onSelectMediaType("camera", multiple),
-  },
-];
-
 export const onSelectMediaType = async (
   type: TMedia,
   multiple: boolean
@@ -168,16 +155,32 @@ export const onSelectMediaType = async (
   return null;
 };
 
+const options: FilePickerActionSheetOption[] = [
+  {
+    type: "document",
+    label: "Döküman Seç",
+    onPress: (multiple: boolean) => onSelectMediaType("document", multiple),
+  },
+  {
+    type: "photo",
+    label: "Galeriden Seç",
+    onPress: (multiple: boolean) => onSelectMediaType("photo", multiple),
+  },
+  {
+    type: "camera",
+    label: "Kamerayı Aç",
+    onPress: (multiple: boolean) => onSelectMediaType("camera", multiple),
+  },
+];
+
 export type FilePickerActionSheetOption = {
   type: TMedia;
   label: string;
-  onPress: (multiple: boolean) => void;
+  onPress: (multiple: boolean) => Promise<Media[]>;
 };
 
 export const getOptions = (
   mediaTypes: TMedia[]
-): Omit<FilePickerActionSheetOption, "type">[] => {
-  return options
-    .filter((option) => mediaTypes.includes(option.type))
-    .map(({ type, ...rest }) => rest);
+): FilePickerActionSheetOption[] => {
+  return options.filter((option) => mediaTypes.includes(option.type));
 };

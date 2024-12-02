@@ -8,7 +8,6 @@ import { router } from "expo-router";
 function OtherHeader({ title }: { title: string }): React.JSX.Element {
   return (
     <View style={styles.container}>
-      <View style={styles._statusBar}></View>
       <View style={styles.body}>
         <Pressable style={styles.button} onPress={() => router.back()}>
           <Icon name="arrow-back-outline" size={24} color={colors.black} />
@@ -22,6 +21,9 @@ function OtherHeader({ title }: { title: string }): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
+    borderBottomWidth: 1,
+    borderColor: colors.lightGray,
+    paddingTop: Constants.statusBarHeight,
   },
   body: {
     display: "flex",
@@ -30,9 +32,6 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     paddingHorizontal: spacing.s,
     height: 60,
-  },
-  _statusBar: {
-    height: Constants.statusBarHeight,
   },
   button: { padding: 8 },
   title: {

@@ -14,7 +14,6 @@ function SearchHeader(): React.JSX.Element {
 
   return (
     <View style={styles.container}>
-      <View style={styles._statusBar}></View>
       <View style={styles.body}>
         <Pressable style={styles.button} onPress={() => router.back()}>
           <Icon name="arrow-back-outline" size={24} color={colors.black} />
@@ -35,6 +34,9 @@ function SearchHeader(): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
+    borderBottomWidth: 1,
+    borderColor: colors.lightGray,
+    paddingTop: Constants.statusBarHeight,
   },
   body: {
     display: "flex",
@@ -46,9 +48,6 @@ const styles = StyleSheet.create({
     height: 60,
   },
   button: { padding: 8 },
-  _statusBar: {
-    height: Constants.statusBarHeight,
-  },
 });
 
 export default SearchHeader;

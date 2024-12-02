@@ -2,7 +2,7 @@ export const companies = [
   {
     id: 1,
     name: "Turkish Airlines",
-    logo: "https://logos-world.net/wp-content/uploads/2020/03/Turkish-Airlines-Logo.png",
+    logo: "https://1000logos.net/wp-content/uploads/2020/04/Turkish_Airlines_logo.png",
   },
   {
     id: 2,
@@ -32,12 +32,12 @@ export const companies = [
   {
     id: 7,
     name: "British Airways",
-    logo: "https://logos-world.net/wp-content/uploads/2021/02/British-Airways-Logo.png",
+    logo: "https://logodownload.org/wp-content/uploads/2019/06/british-airways-logo-1.png",
   },
   {
     id: 8,
     name: "Air France",
-    logo: "https://logos-world.net/wp-content/uploads/2020/03/Air-France-Logo.png",
+    logo: "https://static.wikia.nocookie.net/logopedia/images/e/e9/Air_France_1976.svg/revision/latest/scale-to-width-down/300?cb=20151202220459",
   },
   {
     id: 9,

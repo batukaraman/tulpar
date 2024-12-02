@@ -16,6 +16,7 @@
       "supportsTablet": true
     },
     "android": {
+      "hermes": false,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -24,7 +25,8 @@
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
-      ]
+      ],
+      "package": "com.batukaraman.tulpar"
     },
     "web": {
       "bundler": "metro",

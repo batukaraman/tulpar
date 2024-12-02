@@ -1,13 +1,13 @@
-import SelectCompanyStep from "@/components/CreateScreenSteps/SelectCompanyStep";
-import EvaluateStep from "@/components/CreateScreenSteps/EvaluateStep";
-import AddStep from "@/components/CreateScreenSteps/AddStep";
+import CompanyStep from "@/components/CreateScreenSteps/CompanyStep";
+import RatingStep from "@/components/CreateScreenSteps/RatingStep";
+import AdditionStep from "@/components/CreateScreenSteps/AdditionStep";
 import { RatingValues } from "@/constants/props";
 import { Step } from "@/models/Step";
 
 export const stepsConfig: Step[] = [
   {
     title: "Firma Seç",
-    Component: SelectCompanyStep,
+    Component: CompanyStep,
     validationRules: [
       {
         validate: (values) => values.selectedCompany == null,
@@ -26,7 +26,7 @@ export const stepsConfig: Step[] = [
   },
   {
     title: "Değerlendir",
-    Component: EvaluateStep,
+    Component: RatingStep,
     validationRules: [
       {
         validate: (values) => values.rating.general == 0,
@@ -59,7 +59,7 @@ export const stepsConfig: Step[] = [
   },
   {
     title: "Ekleme Yap",
-    Component: AddStep,
+    Component: AdditionStep,
     validationRules: [
       {
         validate: (values) => values.comment.trim() == "",

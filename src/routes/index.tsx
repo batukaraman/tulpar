@@ -1,7 +1,7 @@
 import { Textbox } from "@/components/FormControl";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StatusBar, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
-import { sizes, spacing } from "@/constants/theme";
+import { colors, sizes, spacing } from "@/constants/theme";
 import Button from "@/components/Button";
 
 export default function Home() {
@@ -25,7 +25,12 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: spacing.m, gap: 8 },
+  container: {
+    flex: 1,
+    padding: spacing.m,
+    gap: 8,
+    backgroundColor: colors.white,
+  },
   searchOverlay: {
     position: "absolute",
     top: 0,

@@ -1,11 +1,11 @@
 import React from "react";
 import { View, Text, ScrollView, StyleSheet } from "react-native";
 import StarRating from "react-native-star-rating-widget";
-import { EvaluateStepProps, RatingValues } from "@/constants/props";
+import { RatingStepProps, RatingValues } from "@/constants/props";
 import { Textbox } from "@/components/FormControl";
 import { colors, sizes, spacing } from "@/constants/theme";
 
-const EvaluateStep = ({ rating, setRating }: EvaluateStepProps) => {
+const RatingStep = ({ rating, setRating }: RatingStepProps) => {
   const criteria = [
     { name: "Zaman", key: "Timing" },
     { name: "Güvenlik", key: "Security" },
@@ -28,6 +28,11 @@ const EvaluateStep = ({ rating, setRating }: EvaluateStepProps) => {
     <ScrollView>
       <View style={styles.container}>
         <StarRating
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
           rating={rating.general}
           starSize={40}
           onChange={(value) => setRating({ ...rating, general: value })}
@@ -46,8 +51,10 @@ const EvaluateStep = ({ rating, setRating }: EvaluateStepProps) => {
                 />
               </View>
               <Textbox
+                size="l"
                 placeholder="Yaşadıklarını yaz"
                 value={rating.criteria[index]?.comment || ""}
+                numberOfLines={3}
                 onChange={(text) =>
                   handleCriteriaChange(index, "comment", text)
                 }
@@ -63,7 +70,6 @@ const EvaluateStep = ({ rating, setRating }: EvaluateStepProps) => {
 const styles = StyleSheet.create({
   container: {
     gap: spacing.l,
-    alignItems: "center",
     padding: spacing.m,
   },
   criteria: { gap: spacing.m, alignSelf: "stretch" },
@@ -75,12 +81,8 @@ const styles = StyleSheet.create({
   },
   part: {
     gap: spacing.s,
-    borderRadius: 15,
-    padding: spacing.l,
-    borderWidth: 1,
-    borderColor: "rgba(27, 31, 35, 0.15)",
   },
-  title: { fontSize: sizes.h4, color: colors.black },
+  title: { fontSize: sizes.h3, color: colors.black },
 });
 
-export default EvaluateStep;
+export default RatingStep;

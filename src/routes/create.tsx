@@ -1,10 +1,18 @@
 import Button from "@/components/Button";
 import StepIndicator from "react-native-step-indicator";
-import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
+import { View, Text, StyleSheet } from "react-native";
 import { stepsConfig } from "@/components/CreateScreenSteps/steps";
 import { colors, spacing } from "@/constants/theme";
 import { ValidationValues } from "@/constants/props";
+import { router } from "expo-router";
+import Constants from "expo-constants";
 import { useKeyboard } from "@/hooks/useKeyboard";
 
 const customStyles = {
@@ -97,87 +105,92 @@ function Create(): React.JSX.Element {
     ? stepsConfig[step].props(values, setValues)
     : {};
 
-  const keyboardIsVisible = useKeyboard();
+  const isVisibleKeyboard = useKeyboard();
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.white }}>
-      {!keyboardIsVisible && stepsConfig.length > 1 && (
-        <View style={{ padding: spacing.m }}>
-          <StepIndicator
-            customStyles={customStyles}
-            labels={stepsConfig.map((step) => step.title)}
-            stepCount={stepsConfig.length}
-            currentPosition={step}
-            onPress={handleStepPress}
-          />
-        </View>
-      )}
+    <View style={styles.container}>
+      <View style={{ padding: spacing.m }}>
+        <StepIndicator
+          customStyles={customStyles}
+          labels={stepsConfig.map((step) => step.title)}
+          stepCount={stepsConfig.length}
+          currentPosition={step}
+          onPress={handleStepPress}
+        />
+      </View>
 
       <CurrentStepComponent {...stepProps} error={errors[step]} />
 
-      <View
-        style={[
-          {
-            gap: spacing.s,
-            padding: spacing.m,
-            borderTopWidth: 1,
-            borderColor: "rgba(27, 31, 35, 0.15)",
-            backgroundColor: colors.white,
-          },
-          validations[step] && keyboardIsVisible && { paddingVertical: 0 },
-        ]}
-      >
-        {errors[step] &&
-          errors[step].some((err: string) => err.trim() !== "") && (
-            <View>
-              {errors[step].map(
-                (err: string, index: number) =>
-                  err.trim() !== "" && (
-                    <Text key={index} style={{ color: "red" }}>
-                      {err}
-                    </Text>
-                  )
-              )}
-            </View>
-          )}
-        {!keyboardIsVisible && (
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 10,
-            }}
-          >
-            {step > 0 && (
-              <Button
-                text="Geri"
-                variant="secondary"
-                onPress={handleBack}
-                style={{ flex: 1 }}
-              />
-            )}
-            {step < stepsConfig.length - 1 && (
-              <Button
-                text="İleri"
-                onPress={handleNext}
-                disable={!validations[step]}
-                style={{ flex: 2 }}
-              />
-            )}
-            {step === stepsConfig.length - 1 && (
-              <Button
-                text="Bitir"
-                onPress={() => {
-                  console.log(JSON.stringify(values, null, 2));
-                }}
-                disable={!validations[step]}
-                style={{ flex: 2 }}
-              />
+      {errors[step] &&
+        errors[step].some((err: string) => err.trim() !== "") && (
+          <View style={styles.messages}>
+            {errors[step].find((err: string) => err.trim() !== "") && (
+              <Text style={{ color: "red" }}>
+                {errors[step].find((err: string) => err.trim() !== "")}
+              </Text>
             )}
           </View>
         )}
-      </View>
+      {!isVisibleKeyboard && (
+        <View style={styles.actions}>
+          {step == 0 && (
+            <Button
+              text="Vazgeç"
+              variant="secondary"
+              onPress={router.back}
+              style={{ flex: 1 }}
+            />
+          )}
+          {step > 0 && (
+            <Button
+              text="Geri"
+              variant="secondary"
+              onPress={handleBack}
+              style={{ flex: 1 }}
+            />
+          )}
+          {step < stepsConfig.length - 1 && (
+            <Button
+              text="İleri"
+              onPress={handleNext}
+              disable={!validations[step]}
+              style={{ flex: 2 }}
+            />
+          )}
+          {step === stepsConfig.length - 1 && (
+            <Button
+              text="Bitir"
+              onPress={() => {
+                console.log("Hello world");
+
+                console.log(JSON.stringify(values, null, 2));
+              }}
+              disable={!validations[step]}
+              style={{ flex: 2 }}
+            />
+          )}
+        </View>
+      )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+    paddingTop: Constants.statusBarHeight,
+  },
+  actions: {
+    flexDirection: "row",
+    gap: 10,
+    padding: 16,
+    backgroundColor: colors.white,
+  },
+  messages: {
+    padding: 16,
+    backgroundColor: colors.white,
+  },
+});
 
 export default Create;

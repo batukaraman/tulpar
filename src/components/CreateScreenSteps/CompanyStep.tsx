@@ -6,14 +6,16 @@ import {
   Pressable,
   View,
   StyleSheet,
+  Keyboard,
 } from "react-native";
 import { colors, spacing } from "@/constants/theme";
 import { Textbox } from "@/components/FormControl";
 import { useDebouncedSearch } from "@/hooks/useDebouncedSearch";
 import { CompanySearchService } from "@/services/search/CompanySearchService";
-import { SelectCompanyStepProps } from "@/constants/props";
+import { CompanyStepProps } from "@/constants/props";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
-const SelectCompanyStep: React.FC<SelectCompanyStepProps> = ({
+const CompanyStep: React.FC<CompanyStepProps> = ({
   selectedCompany,
   setSelectedCompany,
 }) => {
@@ -23,30 +25,30 @@ const SelectCompanyStep: React.FC<SelectCompanyStepProps> = ({
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ paddingHorizontal: spacing.m }}>
+      <View style={{ marginBottom: 16, paddingHorizontal: spacing.m }}>
         <Textbox
           type="search"
           placeholder="Firma Ara"
           showIcon
           onChange={setQuery}
           value={query}
+          size="l"
         />
       </View>
-
       <FlatList
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        numColumns={2}
         style={{ paddingHorizontal: spacing.m }}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
         data={results}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <Pressable
             style={[
               styles.itemContainer,
               selectedCompany &&
                 item.name === selectedCompany.name &&
                 styles.selectedItem,
-              {
-                borderBottomWidth:
-                  item.id === results[results.length - 1].id ? 0 : 1,
-              },
             ]}
             onPress={() =>
               setSelectedCompany(
@@ -66,19 +68,24 @@ const SelectCompanyStep: React.FC<SelectCompanyStepProps> = ({
 
 const styles = StyleSheet.create({
   itemContainer: {
-    flexDirection: "row",
     alignItems: "center",
     paddingVertical: spacing.s,
     paddingHorizontal: spacing.s,
-    gap: spacing.m,
-    borderColor: "rgba(27, 31, 35, 0.15)",
+    gap: spacing.xs,
+    backgroundColor: colors.white,
+    width: "49%",
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+    borderRadius: 20,
   },
   selectedItem: {
-    backgroundColor: "#e6f2ff",
+    backgroundColor: "#eef1fd",
+    borderColor: colors.primary,
   },
   logo: {
-    width: 60,
-    height: 30,
+    width: "100%",
+    height: 50,
     resizeMode: "contain",
   },
   companyName: {
@@ -91,4 +98,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SelectCompanyStep;
+export default CompanyStep;

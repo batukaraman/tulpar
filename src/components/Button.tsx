@@ -17,36 +17,45 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   const [buttonHeight, setButtonHeight] = useState(0);
 
-  const contentColor =
-    variant === "primary"
-      ? colors.white
-      : disable
-      ? colors.white
-      : colors.black;
+  const getVariantStyles = () => {
+    if (disable) {
+      return {
+        container: styles.disabledContainer,
+        content: styles.disabledContent,
+      };
+    }
+    return variant === "primary"
+      ? {
+          container: styles.primaryContainer,
+          content: styles.primaryContent,
+        }
+      : {
+          container: styles.secondaryContainer,
+          content: styles.secondaryContent,
+        };
+  };
 
-  const containerBackColor = disable
-    ? colors.gray
-    : variant === "primary"
-    ? colors.primary
-    : colors.white;
+  const { container, content } = getVariantStyles();
+
+  const containerStyle = [
+    styles.container,
+    container,
+    onlyIcon && {
+      width: buttonHeight,
+      paddingHorizontal: spacing.xm,
+    },
+    style,
+  ];
+
+  const contentStyle = [styles.content, content];
 
   const renderIcon = () => (
-    <Icon name={iconName} size={sizes.h4} color={contentColor} />
+    <Icon name={iconName} size={sizes.h4} style={contentStyle} />
   );
 
   return (
     <TouchableOpacity
-      style={[
-        styles.container,
-        {
-          backgroundColor: containerBackColor,
-        },
-        onlyIcon && {
-          width: buttonHeight,
-          paddingHorizontal: spacing.xm,
-        },
-        style,
-      ]}
+      style={containerStyle}
       onLayout={(event) => {
         const { height } = event.nativeEvent.layout;
         setButtonHeight(height);
@@ -55,9 +64,7 @@ const Button: React.FC<ButtonProps> = ({
       onPress={onPress}
     >
       {(onlyIcon || iconVisible) && iconFloat === "left" && renderIcon()}
-      {!onlyIcon && (
-        <Text style={[styles.text, { color: contentColor }]}>{text}</Text>
-      )}
+      {!onlyIcon && <Text style={contentStyle}>{text}</Text>}
       {iconVisible && iconFloat === "right" && renderIcon()}
     </TouchableOpacity>
   );
@@ -65,25 +72,38 @@ const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    borderColor: "rgba(27, 31, 35, 0.15)",
-    borderWidth: 1,
-    borderRadius: 6,
+    borderRadius: 99,
     height: 40,
     paddingHorizontal: spacing.m,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "rgba(27, 31, 35, 0.04)",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 1,
     flexDirection: "row",
     gap: spacing.xs,
   },
-  text: {
+  content: {
     fontSize: sizes.body,
     fontWeight: "500",
     lineHeight: 20,
+  },
+  primaryContainer: {
+    backgroundColor: colors.primary,
+  },
+  primaryContent: {
+    color: colors.white,
+  },
+  secondaryContainer: {
+    backgroundColor: colors.white,
+    borderColor: colors.primary,
+    borderWidth: 1,
+  },
+  secondaryContent: {
+    color: colors.primary,
+  },
+  disabledContainer: {
+    backgroundColor: colors.lightGray,
+  },
+  disabledContent: {
+    color: colors.white,
   },
 });
 

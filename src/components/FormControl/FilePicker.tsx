@@ -1,9 +1,27 @@
-import React from "react";
-import { useActionSheet } from "@expo/react-native-action-sheet";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useCallback, useRef } from "react";
+import {
+  FlatList,
+  Platform,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from "react-native";
 import Button from "@/components/Button";
-import { TMedia, getOptions } from "@/helpers/filePicker";
+import {
+  FilePickerActionSheetOption,
+  TMedia,
+  getOptions,
+} from "@/helpers/filePicker";
 import { Media } from "@/constants/props";
+import {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
+import { colors, sizes, spacing } from "@/constants/theme";
+import Icon from "@expo/vector-icons/Ionicons";
 
 const FilePicker = ({
   mediaTypes,
@@ -13,83 +31,227 @@ const FilePicker = ({
 }: {
   mediaTypes: TMedia[];
   selectedMedia: Media[];
-  onSelect: (selectedMedia: any[]) => void;
+  onSelect: (selectedMedia: Media[]) => void;
   multiple?: boolean;
 }) => {
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
   const options = getOptions(mediaTypes);
-  const { showActionSheetWithOptions } = useActionSheet();
 
-  const handleOpenActionSheet = () => {
-    const optionLabels = options.map((item) => item.label);
-    const cancelButtonIndex = optionLabels.length;
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
 
-    showActionSheetWithOptions(
-      {
-        title: "Medya Seçimi",
-        message: "Lütfen seçmek istediğiniz medya türünü seçin",
-        options: [...optionLabels, "Cancel"],
-        cancelButtonIndex,
-        destructiveButtonIndex: cancelButtonIndex,
-      },
-      async (buttonIndex) => {
-        if (buttonIndex !== undefined && buttonIndex < optionLabels.length) {
-          const media = await options[buttonIndex].onPress(multiple);
-          if (media === undefined || media === null) {
-            return;
-          }
+  const handleClickOption = useCallback(
+    async (item: FilePickerActionSheetOption) => {
+      try {
+        const media = await item.onPress(multiple);
+        if (media) {
           const updatedMedia = multiple
             ? [...selectedMedia, ...media]
             : [...media];
           onSelect(updatedMedia);
         }
+      } catch (error) {
+        Alert.alert("Hata", "Medya seçimi sırasında bir hata oluştu.");
+      } finally {
+        bottomSheetModalRef.current?.close();
       }
-    );
-  };
+    },
+    [multiple, selectedMedia, onSelect]
+  );
 
-  const handleRemoveMedia = (index: number) => {
-    const updatedMedia = selectedMedia.filter((_, i) => i !== index);
-    onSelect(updatedMedia);
-  };
+  const handleRemoveMedia = useCallback(
+    (index: number) => {
+      const updatedMedia = selectedMedia.filter((_, i) => i !== index);
+      onSelect(updatedMedia);
+    },
+    [selectedMedia, onSelect]
+  );
+
+  const optionsRenderItem = useCallback(
+    ({ item }: { item: FilePickerActionSheetOption }) => (
+      <TouchableOpacity
+        style={styles.optionsItem}
+        onPress={() => handleClickOption(item)}
+      >
+        <Text>{item.label}</Text>
+      </TouchableOpacity>
+    ),
+    [handleClickOption]
+  );
+
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+      />
+    ),
+    []
+  );
 
   return (
-    <View style={{ display: "flex", gap: 8 }}>
-      {(multiple || selectedMedia.length === 0) && (
-        <Button
-          text={selectedMedia.length === 0 ? "Medya Seç" : "Medya Ekle"}
-          onPress={handleOpenActionSheet}
-        />
+    <>
+      {selectedMedia.length === 0 ? (
+        <TouchableOpacity
+          onPress={handlePresentModalPress}
+          style={styles.uploadContainer}
+        >
+          <View style={styles.uploadIconContainer}>
+            <Icon
+              name="cloud-upload-outline"
+              size={20}
+              color={colors.primary}
+            />
+          </View>
+          <Text style={styles.uploadText}>
+            Dosya bulmak için buraya{" "}
+            <Text style={styles.uploadTextHighlight}>
+              {Platform.OS === "web" ? "tıkla veya sürükle" : "dokun"}
+            </Text>
+          </Text>
+          <Text style={styles.formatInfo}>JPG, PNG, PDF (Her biri 2 MB)</Text>
+          <Text style={styles.formatInfo}>Maksimum 5 adet</Text>
+        </TouchableOpacity>
+      ) : (
+        <View style={styles.selectedMediaContainer}>
+          <View style={styles.selectedMediaHeader}>
+            <View>
+              <Text style={styles.selectedMediaTitle}>Seçilen Dosyalar</Text>
+              <Text style={{ fontSize: sizes.small, color: colors.gray }}>
+                Üzerine dokunarak silebilirsin
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={handlePresentModalPress}
+            >
+              <Text style={styles.addButtonText}>Ekle</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            style={styles.mediaList}
+            data={selectedMedia}
+            keyExtractor={(item) => item.uri}
+            renderItem={({ item, index }) => {
+              return (
+                <View style={styles.mediaItem}>
+                  <TouchableOpacity
+                    style={styles.removeButton}
+                    onPress={() => handleRemoveMedia(index)}
+                  >
+                    <Text numberOfLines={1}>{item.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            }}
+          />
+        </View>
       )}
 
-      <View>
-        {selectedMedia.length > 0 ? (
-          selectedMedia.map((media, index) => (
-            <View
-              key={index}
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: 4,
-              }}
-            >
-              <Text>{media.name}</Text>
-              <TouchableOpacity
-                style={{
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                }}
-                onPress={() => handleRemoveMedia(index)}
-              >
-                <Text style={{ color: "red" }}>Sil</Text>
-              </TouchableOpacity>
-            </View>
-          ))
-        ) : (
-          <Text>Henüz medya seçilmedi.</Text>
-        )}
-      </View>
-    </View>
+      <BottomSheetModal
+        ref={bottomSheetModalRef}
+        enableDynamicSizing={true}
+        enablePanDownToClose={true}
+        style={styles.bottomSheet}
+        backdropComponent={renderBackdrop}
+      >
+        <BottomSheetView>
+          <View style={styles.bottomSheetHeader}>
+            <Text style={styles.bottomSheetTitle}>Medya Seçenekleri</Text>
+          </View>
+          <FlatList
+            data={options}
+            style={styles.optionsContainer}
+            keyExtractor={(item) => item.label}
+            renderItem={optionsRenderItem}
+          />
+        </BottomSheetView>
+      </BottomSheetModal>
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  uploadContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: spacing.s,
+    padding: spacing.l,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+    borderStyle: "dashed",
+    borderRadius: 15,
+  },
+  uploadIconContainer: {
+    borderRadius: 99,
+    padding: spacing.s,
+    backgroundColor: "#eef1fd",
+  },
+  uploadText: {
+    textAlign: "center",
+  },
+  uploadTextHighlight: {
+    fontWeight: "700",
+    color: colors.primary,
+  },
+  formatInfo: {
+    textAlign: "center",
+    fontSize: sizes.small,
+    color: colors.gray,
+  },
+  selectedMediaContainer: {
+    gap: spacing.s,
+  },
+  selectedMediaHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  selectedMediaTitle: {
+    fontWeight: "700",
+    fontSize: sizes.h4,
+  },
+  addButton: {
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.s,
+    borderRadius: 5,
+    backgroundColor: "#eef1fd",
+  },
+  addButtonText: {
+    color: colors.primary,
+  },
+  mediaList: {},
+  mediaItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  removeButton: {
+    flex: 1,
+    paddingVertical: spacing.xs,
+  },
+  optionsContainer: {
+    paddingHorizontal: spacing.m,
+  },
+  optionsItem: {
+    height: 42,
+  },
+  bottomSheetHeader: {
+    paddingHorizontal: spacing.m,
+    marginBottom: 24,
+  },
+  bottomSheetTitle: {
+    fontSize: sizes.h3,
+    fontWeight: "bold",
+  },
+  bottomSheet: {
+    borderRadius: 20,
+    overflow: "hidden",
+  },
+});
 
 export default FilePicker;
