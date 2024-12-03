@@ -69,7 +69,7 @@ function Textbox({
           { borderRadius: numberOfLines > 1 ? 15 : 99 },
         ]}
       >
-        {((iconHandle() && showIcon) || iconName) && (
+        {iconHandle() && showIcon && (
           <Icon
             name={iconHandle() || iconName}
             style={[
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
   errorText: {
-    color: "red",
+    color: colors.red,
     fontSize: sizes.small,
   },
 });

@@ -1,7 +1,6 @@
 import CompanyStep from "@/components/CreateScreenSteps/CompanyStep";
 import RatingStep from "@/components/CreateScreenSteps/RatingStep";
 import AdditionStep from "@/components/CreateScreenSteps/AdditionStep";
-import { RatingValues } from "@/constants/props";
 import { Step } from "@/models/Step";
 
 export const stepsConfig: Step[] = [
@@ -29,38 +28,9 @@ export const stepsConfig: Step[] = [
     Component: RatingStep,
     validationRules: [
       {
-        validate: (values) => values.rating.general == 0,
+        validate: (values) => values.rating == 0,
         errorMessage: "Genel bir değerlendirme yapmalısınız.",
       },
-    ],
-    initialValues: {
-      rating: {
-        general: 0,
-        criteria: [
-          { name: "Timing", rating: 0, comment: "" },
-          { name: "Security", rating: 0, comment: "" },
-          { name: "Comfort", rating: 0, comment: "" },
-          { name: "Service", rating: 0, comment: "" },
-          { name: "Entertainment", rating: 0, comment: "" },
-        ],
-      },
-    },
-    props: (
-      values: { rating: RatingValues },
-      setValues: (arg0: any) => any
-    ) => ({
-      rating: values.rating,
-      setRating: (newRating: Partial<RatingValues>) =>
-        setValues({
-          ...values,
-          rating: { ...values.rating, ...newRating },
-        }),
-    }),
-  },
-  {
-    title: "Ekleme Yap",
-    Component: AdditionStep,
-    validationRules: [
       {
         validate: (values) => values.comment.trim() == "",
         errorMessage: "Yorum alanı boş bırakılamaz.",
@@ -70,13 +40,31 @@ export const stepsConfig: Step[] = [
         errorMessage: "Yorum en az 10 karakter olmalı.",
       },
     ],
-    initialValues: { comment: "", media: [] },
+    initialValues: {
+      rating: 0,
+      comment: "",
+    },
     props: (
-      values: { comment: any; media: any },
+      values: { rating: number; comment: string },
       setValues: (arg0: any) => any
     ) => ({
       comment: values.comment,
-      setComment: (comment: any) => setValues({ ...values, comment }),
+      setComment: (comment: string) => setValues({ ...values, comment }),
+      rating: values.rating,
+      setRating: (rating: number) => setValues({ ...values, rating }),
+    }),
+  },
+  {
+    title: "Ekleme Yap",
+    Component: AdditionStep,
+    validationRules: [
+      {
+        validate: (values) => values.media.length > 5,
+        errorMessage: "En fazla 5 adet medya seçebilirsin.",
+      },
+    ],
+    initialValues: { media: [] },
+    props: (values: { media: any }, setValues: (arg0: any) => any) => ({
       media: values.media,
       setMedia: (media: any) => setValues({ ...values, media }),
     }),

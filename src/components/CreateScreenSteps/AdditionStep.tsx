@@ -1,34 +1,40 @@
 import React from "react";
-import { View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
-import { spacing } from "@/constants/theme";
+import { View, ScrollView, Text } from "react-native";
+import { colors, sizes, spacing } from "@/constants/theme";
 import { FilePicker, Textbox } from "@/components/FormControl";
 import { AdditionStepProps } from "@/constants/props";
 
-const AdditionStep = ({
-  comment,
-  setComment,
-  media,
-  setMedia,
-}: AdditionStepProps) => {
+const AdditionStep = ({ media, setMedia }: AdditionStepProps) => {
   return (
-    <ScrollView>
-      <View style={{ padding: spacing.m, gap: spacing.m }}>
-        <FilePicker
-          mediaTypes={["camera", "document", "photo"]}
-          selectedMedia={media}
-          onSelect={setMedia}
-          multiple
-        />
-        <Textbox
-          placeholder="Deneyimlerinizi yazın"
-          value={comment}
-          onChange={setComment}
-          numberOfLines={8}
-          showIcon
-          size="l"
-        />
+    <View style={{ flex: 1, padding: spacing.m, gap: spacing.xs }}>
+      <View>
+        <Text
+          style={{
+            marginBottom: spacing.xs,
+            fontSize: sizes.h2,
+            fontWeight: "bold",
+            color: colors.primary,
+          }}
+        >
+          Yaşadıklarını Göster
+        </Text>
+        <Text
+          style={{
+            marginBottom: spacing.s,
+            fontSize: sizes.body,
+            color: colors.gray,
+          }}
+        >
+          Belge, fotoğraf, video vb. yükleyerek sizi anlamamıza yardımcı olun.
+        </Text>
       </View>
-    </ScrollView>
+      <FilePicker
+        mediaTypes={["camera", "document", "photo"]}
+        selectedMedia={media}
+        onSelect={setMedia}
+        multiple
+      />
+    </View>
   );
 };
 

@@ -131,23 +131,18 @@ const FilePicker = ({
               <Text style={styles.addButtonText}>Ekle</Text>
             </TouchableOpacity>
           </View>
-          <FlatList
-            style={styles.mediaList}
-            data={selectedMedia}
-            keyExtractor={(item) => item.uri}
-            renderItem={({ item, index }) => {
-              return (
-                <View style={styles.mediaItem}>
-                  <TouchableOpacity
-                    style={styles.removeButton}
-                    onPress={() => handleRemoveMedia(index)}
-                  >
-                    <Text numberOfLines={1}>{item.name}</Text>
-                  </TouchableOpacity>
-                </View>
-              );
-            }}
-          />
+          <View style={styles.mediaList}>
+            {selectedMedia.map((media, index) => (
+              <View style={styles.mediaItem} key={index}>
+                <TouchableOpacity
+                  style={styles.removeButton}
+                  onPress={() => handleRemoveMedia(index)}
+                >
+                  <Text numberOfLines={1}>{media.name}</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
         </View>
       )}
 
@@ -189,7 +184,7 @@ const styles = StyleSheet.create({
   uploadIconContainer: {
     borderRadius: 99,
     padding: spacing.s,
-    backgroundColor: "#eef1fd",
+    backgroundColor: colors.primaryLight,
   },
   uploadText: {
     textAlign: "center",
@@ -212,14 +207,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   selectedMediaTitle: {
-    fontWeight: "700",
     fontSize: sizes.h4,
   },
   addButton: {
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.s,
     borderRadius: 5,
-    backgroundColor: "#eef1fd",
+    backgroundColor: colors.primaryLight,
   },
   addButtonText: {
     color: colors.primary,

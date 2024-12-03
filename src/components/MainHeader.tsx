@@ -6,7 +6,6 @@ import Icon from "@expo/vector-icons/Ionicons";
 import Constants from "expo-constants";
 import { Link } from "expo-router";
 import { Pressable } from "react-native";
-import { StatusBar } from "expo-status-bar";
 
 function MainHeader(): React.JSX.Element {
   return (
@@ -42,7 +41,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderBottomWidth: 1,
     borderColor: colors.lightGray,
-    paddingTop: Constants.statusBarHeight,
   },
   body: {
     display: "flex",
@@ -53,9 +51,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.s,
     paddingLeft: spacing.m,
     height: 60,
-  },
-  _statusBar: {
-    height: Constants.statusBarHeight,
   },
   button: { padding: 8 },
   avatarWrapper: {

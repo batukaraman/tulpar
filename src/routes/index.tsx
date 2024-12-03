@@ -1,5 +1,5 @@
 import { Textbox } from "@/components/FormControl";
-import { Pressable, StatusBar, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import { colors, sizes, spacing } from "@/constants/theme";
 import Button from "@/components/Button";

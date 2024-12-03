@@ -1,12 +1,6 @@
 import Button from "@/components/Button";
 import StepIndicator from "react-native-step-indicator";
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { stepsConfig } from "@/components/CreateScreenSteps/steps";
 import { colors, spacing } from "@/constants/theme";
@@ -40,6 +34,15 @@ const customStyles = {
 };
 
 function Create(): React.JSX.Element {
+  const stepIndicatorLabels = useMemo(
+    () => stepsConfig.map((step) => step.title),
+    []
+  );
+  const stepIndicatorCount = useMemo(
+    () => stepIndicatorLabels.length,
+    [stepIndicatorLabels]
+  );
+
   const [step, setStep] = useState(0);
   const [validations, setValidations] = useState<boolean[]>(
     Array(stepsConfig.length).fill(false)
@@ -53,31 +56,37 @@ function Create(): React.JSX.Element {
     }, {} as ValidationValues)
   );
 
-  const validateCurrentStep = (stepIndex: number) => {
-    const currentStep = stepsConfig[stepIndex];
-    if (!currentStep) return false;
+  const validateCurrentStep = useCallback(
+    (stepIndex: number) => {
+      const currentStep = stepsConfig[stepIndex];
+      if (!currentStep) return false;
 
-    const validationErrors = currentStep.validationRules.map((rule) =>
-      !rule.validate(values) ? "" : rule.errorMessage
-    );
+      const validationErrors = currentStep.validationRules.map((rule) =>
+        !rule.validate(values) ? "" : rule.errorMessage
+      );
 
-    setErrors((prevErrors) => {
-      const newErrors = [...prevErrors];
-      newErrors[stepIndex] = validationErrors;
-      return newErrors;
-    });
+      setErrors((prevErrors) => {
+        const newErrors = [...prevErrors];
+        newErrors[stepIndex] = validationErrors;
+        return newErrors;
+      });
 
-    return validationErrors.every((error) => error === "");
-  };
+      return validationErrors.every((error) => error === "");
+    },
+    [values]
+  );
 
-  const handleValidation = (stepIndex: number) => {
-    const isValid = validateCurrentStep(stepIndex);
-    setValidations((prevValidations) => {
-      const newValidations = [...prevValidations];
-      newValidations[stepIndex] = isValid;
-      return newValidations;
-    });
-  };
+  const handleValidation = useCallback(
+    (stepIndex: number) => {
+      const isValid = validateCurrentStep(stepIndex);
+      setValidations((prevValidations) => {
+        const newValidations = [...prevValidations];
+        newValidations[stepIndex] = isValid;
+        return newValidations;
+      });
+    },
+    [validateCurrentStep]
+  );
 
   useEffect(() => {
     handleValidation(step);
@@ -89,8 +98,7 @@ function Create(): React.JSX.Element {
   };
 
   const handleNext = () => {
-    const isValid = validateCurrentStep(step);
-    if (isValid && step < stepsConfig.length - 1) {
+    if (step < stepsConfig.length - 1) {
       setStep(step + 1);
     }
   };
@@ -99,7 +107,10 @@ function Create(): React.JSX.Element {
     if (step > 0) setStep(step - 1);
   };
 
-  const CurrentStepComponent = stepsConfig[step].Component;
+  const CurrentStepComponent = useMemo(
+    () => stepsConfig[step].Component,
+    [step]
+  );
 
   const stepProps = stepsConfig[step].props
     ? stepsConfig[step].props(values, setValues)
@@ -112,8 +123,8 @@ function Create(): React.JSX.Element {
       <View style={{ padding: spacing.m }}>
         <StepIndicator
           customStyles={customStyles}
-          labels={stepsConfig.map((step) => step.title)}
-          stepCount={stepsConfig.length}
+          labels={stepIndicatorLabels}
+          stepCount={stepIndicatorCount}
           currentPosition={step}
           onPress={handleStepPress}
         />
@@ -123,9 +134,14 @@ function Create(): React.JSX.Element {
 
       {errors[step] &&
         errors[step].some((err: string) => err.trim() !== "") && (
-          <View style={styles.messages}>
+          <View
+            style={[
+              styles.messages,
+              { paddingBottom: isVisibleKeyboard ? 16 : 0 },
+            ]}
+          >
             {errors[step].find((err: string) => err.trim() !== "") && (
-              <Text style={{ color: "red" }}>
+              <Text style={{ color: colors.red }}>
                 {errors[step].find((err: string) => err.trim() !== "")}
               </Text>
             )}
@@ -162,7 +178,6 @@ function Create(): React.JSX.Element {
               text="Bitir"
               onPress={() => {
                 console.log("Hello world");
-
                 console.log(JSON.stringify(values, null, 2));
               }}
               disable={!validations[step]}
@@ -179,7 +194,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
-    paddingTop: Constants.statusBarHeight,
   },
   actions: {
     flexDirection: "row",

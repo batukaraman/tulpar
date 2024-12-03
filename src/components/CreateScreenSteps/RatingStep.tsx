@@ -1,67 +1,52 @@
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import { View, Text, ScrollView, StyleSheet } from "react-native";
-import StarRating from "react-native-star-rating-widget";
-import { RatingStepProps, RatingValues } from "@/constants/props";
+import { RatingStepProps } from "@/constants/props";
 import { Textbox } from "@/components/FormControl";
 import { colors, sizes, spacing } from "@/constants/theme";
+import RatingStar from "../RatingStar";
 
-const RatingStep = ({ rating, setRating }: RatingStepProps) => {
-  const criteria = [
-    { name: "Zaman", key: "Timing" },
-    { name: "Güvenlik", key: "Security" },
-    { name: "Konfor", key: "Comfort" },
-    { name: "Hizmet", key: "Service" },
-    { name: "Eğlence", key: "Entertainment" },
-  ];
-
-  const handleCriteriaChange = (
-    index: number,
-    key: keyof RatingValues["criteria"][0],
-    value: any
-  ) => {
-    const updatedCriteria = [...rating.criteria];
-    updatedCriteria[index] = { ...updatedCriteria[index], [key]: value };
-    setRating({ ...rating, criteria: updatedCriteria });
-  };
-
+const RatingStep = ({
+  comment,
+  setComment,
+  rating,
+  setRating,
+}: RatingStepProps) => {
   return (
-    <ScrollView>
+    <ScrollView
+      keyboardDismissMode="on-drag"
+      keyboardShouldPersistTaps="handled"
+    >
       <View style={styles.container}>
-        <StarRating
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          rating={rating.general}
-          starSize={40}
-          onChange={(value) => setRating({ ...rating, general: value })}
-        />
-        <View style={styles.criteria}>
-          {criteria.map((item, index) => (
-            <View key={index} style={styles.part}>
-              <View style={styles.head}>
-                <Text style={styles.title}>{item.name}</Text>
-                <StarRating
-                  starSize={32}
-                  rating={rating.criteria[index]?.rating || 0}
-                  onChange={(value) =>
-                    handleCriteriaChange(index, "rating", value)
-                  }
-                />
-              </View>
-              <Textbox
-                size="l"
-                placeholder="Yaşadıklarını yaz"
-                value={rating.criteria[index]?.comment || ""}
-                numberOfLines={3}
-                onChange={(text) =>
-                  handleCriteriaChange(index, "comment", text)
-                }
-              />
-            </View>
-          ))}
+        <View>
+          <Text
+            style={{
+              marginBottom: spacing.xs,
+              fontSize: sizes.h2,
+              fontWeight: "bold",
+              color: colors.primary,
+            }}
+          >
+            Firmayı Değerlendir
+          </Text>
+          <Text
+            style={{
+              fontSize: sizes.body,
+              color: colors.gray,
+            }}
+          >
+            Firma için bir puan ver ve hakkında düşünelerini yaz.
+          </Text>
         </View>
+        <View style={{ alignItems: "center" }}>
+          <RatingStar value={rating} onChange={setRating} size={32} />
+        </View>
+        <Textbox
+          placeholder="Deneyimlerinizi yazın"
+          value={comment}
+          onChange={setComment}
+          numberOfLines={8}
+          size="l"
+        />
       </View>
     </ScrollView>
   );

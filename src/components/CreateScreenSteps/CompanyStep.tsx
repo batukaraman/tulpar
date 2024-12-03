@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Text,
   FlatList,
@@ -6,14 +6,12 @@ import {
   Pressable,
   View,
   StyleSheet,
-  Keyboard,
 } from "react-native";
 import { colors, spacing } from "@/constants/theme";
 import { Textbox } from "@/components/FormControl";
 import { useDebouncedSearch } from "@/hooks/useDebouncedSearch";
 import { CompanySearchService } from "@/services/search/CompanySearchService";
 import { CompanyStepProps } from "@/constants/props";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const CompanyStep: React.FC<CompanyStepProps> = ({
   selectedCompany,
@@ -80,7 +78,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   selectedItem: {
-    backgroundColor: "#eef1fd",
+    backgroundColor: colors.primaryLight,
     borderColor: colors.primary,
   },
   logo: {
@@ -91,10 +89,6 @@ const styles = StyleSheet.create({
   companyName: {
     color: colors.black,
     fontSize: 16,
-  },
-  errorText: {
-    color: "red",
-    marginTop: 5,
   },
 });
 

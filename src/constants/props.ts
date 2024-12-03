@@ -39,9 +39,9 @@ export interface TextboxProps {
 
 export interface ValidationValues {
   selectedCompany: Company;
-  rating: RatingValues;
+  rating: number;
   comment: string;
-  media: any[] | null;
+  media: object[];
 }
 
 export interface CompanyStepProps {
@@ -55,14 +55,11 @@ interface RatingCriteria {
   comment: string;
 }
 
-export interface RatingValues {
-  general: number;
-  criteria: RatingCriteria[];
-}
-
 export interface RatingStepProps {
-  rating: RatingValues;
-  setRating: (rating: RatingValues) => void;
+  rating: number;
+  setRating: (rating: number) => void;
+  comment: string;
+  setComment: (comment: string) => void;
 }
 
 type DocumentMedia = {
@@ -80,8 +77,6 @@ type ImageMedia = DocumentMedia & {
 export type Media = DocumentMedia | ImageMedia;
 
 export interface AdditionStepProps {
-  comment: string;
-  setComment: (comment: string) => void;
   media: Media[];
   setMedia: (media: any[] | null) => void;
 }

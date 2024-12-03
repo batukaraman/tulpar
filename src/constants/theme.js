@@ -1,9 +1,14 @@
 export const colors = {
   primary: "#556ee6",
+  primaryLight: "#eef1fd",
   gray: "#8b8989",
   lightGray: "#D0D5DD",
   white: "#fff",
   black: "#24292e",
+  red: "#dc2626",
+  yellow: "#eab308",
+  green: "#84cc16",
+  blue: "#2563eb",
 };
 
 export const shadow = {

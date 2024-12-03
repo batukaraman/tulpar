@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderBottomWidth: 1,
     borderColor: colors.lightGray,
-    paddingTop: Constants.statusBarHeight,
   },
   body: {
     display: "flex",
